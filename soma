@@ -1,7 +1,7 @@
 ;Programa Soma de dois números de 1 dígito
 ;Introdução ao Assembly
-;Author: nome, FEAP
-;Version: nome completo curso Engenharia da Computação
+;Author: Gabriel, FEAP
+;Version: Gabriel Santana dos Santos curso Engenharia da Computação
 SYS_EXIT        equ 1
 SYS_READ        equ 3
 SYS_WRITE       equ 4

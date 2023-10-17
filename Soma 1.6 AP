@@ -11,34 +11,32 @@ STDOUT      equ 1
 
 section .data
     ; Mensagem para informar o primeiro número
-    msg1 db 'Insira um dígito', 0xa, 0xd
-    len1 equ $ - msg1
+    msg1 db 'Insira um dígito',0xa,0xd
+    len1 equ $-msg1
 
     ; Mensagem para informar o segundo número
-    msg2 db 'Insira o segundo dígito', 0xa, 0xd
-    len2 equ $ - msg2
+    msg2 db 'Insira o segundo dígito',0xa,0xd
+    len2 equ $-msg2
 
     ; Mensagem para informar o resultado (soma)
     msg3 db 'A soma é:'
-    len3 equ $ - msg3
+    len3 equ $-msg3
 
     ; Mensagem de erro
-    msg_err db 'Erro: A soma é maior que 9 (um dígito)!', 0xa, 0xd
-    len_err equ $ - msg_err
+    msg_err db 'Erro: A soma é maior que 9 (BURRO??)!',0xa,0xd
+    len_err equ $-msg_err
 
 section .bss
     ; Declaração de variáveis a serem processadas
     num1 resb 2
     num2 resb 2
-    res resb 2  ; Alterado para 2, para acomodar o resultado em ASCII
+    res resb 2
 
 section .text
     global _start
 
 _start:
-    ; Iniciando programação
-
-    ; Imprime a string msg1
+    ; Imprime a mensagem msg1
     mov eax, SYS_WRITE
     mov ebx, STDOUT
     mov ecx, msg1
@@ -52,7 +50,7 @@ _start:
     mov edx, 2
     int 0x80
 
-    ; Imprime a string msg2
+    ; Imprime a mensagem msg2
     mov eax, SYS_WRITE
     mov ebx, STDOUT
     mov ecx, msg2
@@ -66,28 +64,28 @@ _start:
     mov edx, 2
     int 0x80
 
-    ; Move o primeiro número para o registro eax e converte para DEC (decimal)
-    mov eax, [num1]
-    sub eax, '0'
+    ; Move o primeiro número para o registro al e converte para DEC (decimal)
+    mov al, [num1]
+    sub al, '0'
 
-    ; Move o segundo número para o registro ebx e converte para DEC (decimal)
-    mov ebx, [num2]
-    sub ebx, '0'
+    ; Move o segundo número para o registro bl e converte para DEC (decimal)
+    mov bl, [num2]
+    sub bl, '0'
 
-    ; Soma eax e ebx
-    add eax, ebx
+    ; Soma al e bl
+    add al, bl
 
     ; Verifica se a soma é maior que 9 (um dígito)
-    cmp eax, 9
-    jg .erro ; Salta para a seção de erro se a soma for maior que 9
+    cmp al, 9
+    jg .erro
 
     ; Converte de decimal para ASCII
-    add eax, '0'
+    add al, '0'
 
     ; Armazena a soma na localização de memória 'res'
-    mov [res], eax
+    mov [res], al
 
-    ; Imprime a string msg3
+    ; Imprime a mensagem msg3
     mov eax, SYS_WRITE
     mov ebx, STDOUT
     mov ecx, msg3
@@ -103,11 +101,11 @@ _start:
 
     ; Sair do programa
     mov eax, SYS_EXIT
-    xor ebx, ebx
+    xor ebx, ebx9
     int 0x80
 
-    ; Lidar com erro
     .erro:
+    ; Imprime a mensagem de erro
     mov eax, SYS_WRITE
     mov ebx, STDOUT
     mov ecx, msg_err
@@ -116,5 +114,5 @@ _start:
 
     ; Sair com código de erro
     mov eax, SYS_EXIT
-    mov ebx, 1  ; Código de erro
+    mov ebx, 1
     int 0x80

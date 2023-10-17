@@ -1,0 +1,120 @@
+; Programa Soma de dois números de 1 dígito
+; Introdução ao Assembly
+; Author: Gabriel, FEAP
+; Version: Gabriel Santana dos Santos, curso Engenharia da Computação
+
+SYS_EXIT    equ 1
+SYS_READ    equ 3
+SYS_WRITE   equ 4
+STDIN       equ 0
+STDOUT      equ 1
+
+section .data
+    ; Mensagem para informar o primeiro número
+    msg1 db 'Insira um dígito', 0xa, 0xd
+    len1 equ $ - msg1
+
+    ; Mensagem para informar o segundo número
+    msg2 db 'Insira o segundo dígito', 0xa, 0xd
+    len2 equ $ - msg2
+
+    ; Mensagem para informar o resultado (soma)
+    msg3 db 'A soma é:'
+    len3 equ $ - msg3
+
+    ; Mensagem de erro
+    msg_err db 'Erro: A soma é maior que 9 (um dígito)!', 0xa, 0xd
+    len_err equ $ - msg_err
+
+section .bss
+    ; Declaração de variáveis a serem processadas
+    num1 resb 2
+    num2 resb 2
+    res resb 2  ; Alterado para 2, para acomodar o resultado em ASCII
+
+section .text
+    global _start
+
+_start:
+    ; Iniciando programação
+
+    ; Imprime a string msg1
+    mov eax, SYS_WRITE
+    mov ebx, STDOUT
+    mov ecx, msg1
+    mov edx, len1
+    int 0x80
+
+    ; Lê o primeiro número
+    mov eax, SYS_READ
+    mov ebx, STDIN
+    mov ecx, num1
+    mov edx, 2
+    int 0x80
+
+    ; Imprime a string msg2
+    mov eax, SYS_WRITE
+    mov ebx, STDOUT
+    mov ecx, msg2
+    mov edx, len2
+    int 0x80
+
+    ; Lê o segundo número
+    mov eax, SYS_READ
+    mov ebx, STDIN
+    mov ecx, num2
+    mov edx, 2
+    int 0x80
+
+    ; Move o primeiro número para o registro eax e converte para DEC (decimal)
+    mov eax, [num1]
+    sub eax, '0'
+
+    ; Move o segundo número para o registro ebx e converte para DEC (decimal)
+    mov ebx, [num2]
+    sub ebx, '0'
+
+    ; Soma eax e ebx
+    add eax, ebx
+
+    ; Verifica se a soma é maior que 9 (um dígito)
+    cmp eax, 9
+    jg .erro ; Salta para a seção de erro se a soma for maior que 9
+
+    ; Converte de decimal para ASCII
+    add eax, '0'
+
+    ; Armazena a soma na localização de memória 'res'
+    mov [res], eax
+
+    ; Imprime a string msg3
+    mov eax, SYS_WRITE
+    mov ebx, STDOUT
+    mov ecx, msg3
+    mov edx, len3
+    int 0x80
+
+    ; Imprime o resultado
+    mov eax, SYS_WRITE
+    mov ebx, STDOUT
+    mov ecx, res
+    mov edx, 2
+    int 0x80
+
+    ; Sair do programa
+    mov eax, SYS_EXIT
+    xor ebx, ebx
+    int 0x80
+
+    ; Lidar com erro
+    .erro:
+    mov eax, SYS_WRITE
+    mov ebx, STDOUT
+    mov ecx, msg_err
+    mov edx, len_err
+    int 0x80
+
+    ; Sair com código de erro
+    mov eax, SYS_EXIT
+    mov ebx, 1  ; Código de erro
+    int 0x80
